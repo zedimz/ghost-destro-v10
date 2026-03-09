@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GHOST DESTRO | REAL BUG ENGINE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-red: #ff0000;
+            --dark-red: #1a0000;
+            --bg-black: #000000; 
+            --glow: 0 0 20px rgba(255, 0, 0, 0.7);
+            --font-cyber: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; height: 100vh; overflow: hidden; }
+
+        #master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -100; object-fit: cover; opacity: 0.1; }
+        .master-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: -99; }
+
+        .screen { display: none; height: 100vh; width: 100%; padding: 25px; overflow-y: auto; position: relative; z-index: 10; }
+        .active { display: block; animation: powerOn 0.4s ease-out; }
+        @keyframes powerOn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+
+        /* HEADER NAMA GHOST DESTRO 16:9 AREA */
+        .ghost-header {
+            width: 100%; text-align: center; padding: 10px;
+            background: linear-gradient(to bottom, rgba(255,0,0,0.2), transparent);
+            border-bottom: 1px solid var(--neon-red); margin-bottom: 10px;
+        }
+        .ghost-name { font-family: var(--font-cyber); font-size: 1.5rem; color: #fff; text-shadow: var(--glow); letter-spacing: 3px; }
+
+        .video-box {
+            width: 100%; aspect-ratio: 16 / 9; border: 2px solid var(--neon-red);
+            border-radius: 15px; overflow: hidden; box-shadow: var(--glow);
+            margin-bottom: 25px; background: #000; position: relative;
+        }
+        .video-box video { width: 100%; height: 100%; object-fit: cover; }
+
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .menu-card {
+            background: rgba(15, 0, 0, 0.95); border: 1px solid var(--neon-red);
+            border-radius: 12px; padding: 25px 10px; text-align: center;
+            transition: 0.2s; cursor: pointer;
+        }
+        .menu-card:active { transform: scale(0.95); background: var(--neon-red); }
+        .menu-card i { font-size: 2.2rem; color: var(--neon-red); margin-bottom: 10px; text-shadow: 0 0 10px red; }
+        .menu-card span { font-family: var(--font-cyber); font-size: 0.7rem; font-weight: 900; display: block; }
+
+        .cyber-input {
+            width: 100%; background: #000; border: 1px solid #400; padding: 18px;
+            color: #fff; border-radius: 12px; font-family: var(--font-mono); margin-bottom: 15px;
+            border-left: 5px solid var(--neon-red); outline: none;
+        }
+
+        .btn-supreme {
+            width: 100%; padding: 20px; background: var(--dark-red); border: 1px solid var(--neon-red);
+            color: #fff; font-family: var(--font-cyber); font-weight: 900; border-radius: 12px;
+            cursor: pointer; box-shadow: var(--glow); text-transform: uppercase; margin-bottom: 10px;
+        }
+
+        .status-header { background: #050000; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; text-align: center; }
+        .badge { padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 900; }
+        .badge-off { background: #300; color: #f00; border: 1px solid red; }
+        .badge-on { background: #030; color: #0f0; border: 1px solid lime; box-shadow: 0 0 10px lime; }
+
+        .v-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .v-item { background: #080000; border: 1px dashed #444; padding: 15px; border-radius: 10px; font-size: 11px; text-align: center; color: #666; font-family: var(--font-mono); cursor: pointer; }
+        .v-item.selected { border: 1px solid var(--neon-red); color: #fff; background: #300; box-shadow: 0 0 15px red; }
+
+        /* LIST GRUP STYLE - ANTI HITAM */
+        #list-grup-container { width: 100%; max-height: 300px; overflow-y: auto; background: #050000; border: 1px solid #333; border-radius: 10px; padding: 10px; }
+        .group-item { padding: 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .group-name { font-family: var(--font-mono); font-size: 12px; color: #fff; }
+
+        .console { background: #000; border-top: 2px solid var(--neon-red); height: 100px; overflow-y: auto; padding: 12px; font-family: var(--font-mono); font-size: 10px; color: #0f0; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <video id="master-bg" autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video>
+    <div class="master-overlay"></div>
+
+    <div id="scr-login" class="screen active">
+        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-family: var(--font-cyber); font-size: 3rem; color: var(--neon-red); text-shadow: var(--glow);">GHOST DESTRO</h1>
+                <p style="letter-spacing: 12px; font-size: 0.8rem; color: #444; font-weight: 900;">BUG ENGINE V10</p>
+            </div>
+            <div style="width: 100%; max-width: 320px;">
+                <input type="text" id="u-core" class="cyber-input" placeholder="OPERATOR ID">
+                <input type="password" id="p-core" class="cyber-input" placeholder="PASSKEY">
+                <button class="btn-supreme" onclick="authProcess()">AUTHORIZE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="scr-main" class="screen">
+        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <div class="status-header">
+            <span id="st-badge" class="badge badge-off">SENDER: OFFLINE</span>
+        </div>
+        <div class="grid-menu">
+            <div class="menu-card" onclick="gate('scr-wa')"><i class="fa-solid fa-radiation"></i><span>BUG WA</span></div>
+            <div class="menu-card" onclick="gate('scr-gp')"><i class="fa-solid fa-biohazard"></i><span>BUG GRUP</span></div>
+            <div class="menu-card" onclick="nav('scr-sender')"><i class="fa-solid fa-link"></i><span>SENDER</span></div>
+            <div class="menu-card" onclick="window.location.href='https://wa.me/62895404399397'"><i class="fa-solid fa-ghost"></i><span>ADMIN</span></div>
+        </div>
+        <div class="console" id="log-main">> [READY] GHOST DESTRO Engine V10.0.1</div>
+    </div>
+
+    <div id="scr-sender" class="screen">
+        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <div style="text-align: center; padding: 20px; border: 1px solid var(--neon-red); border-radius: 15px; background: rgba(0,0,0,0.95);">
+            <h2 style="font-family: var(--font-cyber); margin-bottom: 20px; font-size: 1.2rem;">WHATSAPP PAIRING</h2>
+            <div id="pair-1">
+                <input type="number" id="s-num" class="cyber-input" placeholder="628XXXXXXXXXX">
+                <button class="btn-supreme" onclick="generateCode()">CONNECT SENDER</button>
+            </div>
+            <div id="pair-2" style="display:none;">
+                <p style="font-size: 11px; color: #ff0000; margin-bottom: 15px;">MASUKKAN KODE INI DI WA:</p>
+                <div id="code-box" style="font-size: 3rem; color: #fff; font-family: var(--font-mono); border: 2px dashed red; padding: 15px; margin-bottom: 20px; letter-spacing: 5px;"></div>
+                <button class="btn-supreme" onclick="verifyConn()">VERIFY CONNECTION</button>
+            </div>
+        </div>
+        <button class="btn-supreme" style="background: #000; margin-top: 15px;" onclick="nav('scr-main')">KEMBALI</button>
+    </div>
+
+    <div id="scr-wa" class="screen">
+        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <input type="number" id="t-wa" class="cyber-input" placeholder="NOMOR TARGET">
+        <div class="v-grid">
+            <div class="v-item" onclick="selV(this, 'DELAY')">LOC DELAY</div>
+            <div class="v-item" onclick="selV(this, 'CRASH')">NEWS CRASH</div>
+            <div class="v-item" onclick="selV(this, 'FORCECLOSE')">FORCE CLOSE</div>
+            <div class="v-item" onclick="selV(this, 'GHOST_ID')">GHOST BUG</div>
+        </div>
+        <button class="btn-supreme" onclick="inject('wa')">EXECUTE ATTACK</button>
+        <button class="btn-supreme" style="background:#000;" onclick="nav('scr-main')">BACK</button>
+    </div>
+
+    <div id="scr-gp" class="screen">
+        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <h3 style="font-family: var(--font-cyber); font-size: 0.8rem; margin-bottom: 10px; color: var(--neon-red);">SELECT TARGET GROUP:</h3>
+        <div id="list-grup-container">
+            <p style="text-align: center; color: #444; font-family: var(--font-mono); padding: 20px;">Fetching Groups...</p>
+        </div>
+        <div class="v-grid">
+            <div class="v-item" onclick="selV(this, 'DELAY')">GP DELAY</div>
+            <div class="v-item" onclick="selV(this, 'CRASH')">GP CRASH</div>
+        </div>
+        <button class="btn-supreme" style="background:#000; margin-top: 10px;" onclick="nav('scr-main')">BACK</button>
+    </div>
+
+    <script>
+        let isConnected = false;
+        let activeVirus = "";
+        let selectedGroupId = "";
+        const SERVER_URL = window.location.origin;
+
+        function authProcess() {
+            const u = document.getElementById('u-core').value;
+            const p = document.getElementById('p-core').value;
+            if(u === "DESTRO" && p === "SUPREME") {
+                nav('scr-main');
+                writeLog('log-main', "[OK] Operator Authorized.");
+                checkStatus(); // Cek status otomatis pas masuk
+            } else { alert("ID/PASS SALAH!"); }
+        }
+
+        function gate(s) {
+            if(!isConnected) { alert("SENDER OFFLINE!"); nav('scr-sender'); }
+            else { 
+                nav(s); 
+                if(s === 'scr-gp') loadGroups(); // Panggil fungsi muat grup pas layar grup dibuka
+            }
+        }
+
+        async function checkStatus() {
+            try {
+                const r = await fetch(`${SERVER_URL}/status`);
+                const d = await r.json();
+                if(d.connected) {
+                    isConnected = true;
+                    document.getElementById('st-badge').className = "badge badge-on";
+                    document.getElementById('st-badge').innerText = "SENDER: CONNECTED";
+                }
+            } catch (e) { console.log("Server unreach"); }
+        }
+
+        async function loadGroups() {
+            const container = document.getElementById('list-grup-container');
+            container.innerHTML = '<p style="text-align:center; color: #0f0;">Loading Groups...</p>';
+            try {
+                const r = await fetch(`${SERVER_URL}/getgroups`);
+                const groups = await r.json();
+                container.innerHTML = '';
+                if(groups.length === 0) container.innerHTML = '<p style="text-align:center; color:#f00;">No Groups Found!</p>';
+                groups.forEach(g => {
+                    const div = document.createElement('div');
+                    div.className = 'group-item';
+                    div.innerHTML = `
+                        <span class="group-name">${g.subject || g.id}</span>
+                        <button class="badge badge-on" style="cursor:pointer" onclick="executeGroupBug('${g.id}')">ATTACK</button>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (e) { container.innerHTML = '<p style="text-align:center; color:#f00;">Error Loading Groups!</p>'; }
+        }
+
+        async function generateCode() {
+            const num = document.getElementById('s-num').value;
+            if(num.length < 10) return alert("NOMOR SALAH!");
+            try {
+                const r = await fetch(`${SERVER_URL}/get-pairing`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ number: num })
+                });
+                const d = await r.json();
+                if(d.code) {
+                    document.getElementById('pair-1').style.display = "none";
+                    document.getElementById('pair-2').style.display = "block";
+                    document.getElementById('code-box').innerText = d.code;
+                }
+            } catch (e) { alert("Termux Error!"); }
+        }
+
+        async function verifyConn() {
+            await checkStatus();
+            if(isConnected) { nav('scr-main'); } else { alert("Belum Tertaut!"); }
+        }
+
+        function selV(el, v) {
+            document.querySelectorAll('.v-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            activeVirus = v;
+        }
+
+        async function executeGroupBug(gid) {
+            if(!activeVirus) return alert("PILIH VIRUS DULU!");
+            writeLog('log-main', `[SENDING] ${activeVirus} to Group ${gid}...`);
+            await exec(gid, activeVirus, null);
+        }
+
+        async function inject(type) {
+            const target = document.getElementById('t-wa').value;
+            if(!target || !activeVirus) return alert("DATA KOSONG!");
+            writeLog('log-main', `[SENDING] ${activeVirus} to ${target}...`);
+            await exec(target, activeVirus, null);
+        }
+
+        async function exec(t, vType, i) {
+            try {
+                const r = await fetch(`${SERVER_URL}/inject`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target: t, type: vType, image: i })
+                });
+                const res = await r.json();
+                if(res.status === "success") alert("ATTACK SUCCESS!");
+            } catch (e) { alert("Server Down!"); }
+        }
+
+        function nav(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function writeLog(id, msg) {
+            const b = document.getElementById(id);
+            if(b) { b.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${msg}`; b.scrollTop = b.scrollHeight; }
+        }
+    </script>
+</body>
+</html>
