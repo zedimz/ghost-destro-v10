@@ -182,8 +182,8 @@
         let gSel = "";
         
 
-        // GANTI LINK INI TIAP KALI NGROK LU RESTART  
-        const linkNgrok = "https://tony-flightless-roman.ngrok-free.dev";
+        // LINK PERMANEN LU (JANGAN DIUBAH LAGI) 
+       const API = "https://tony-flightless-roman.ngrok-free.dev";
 
         function forceLogin() {
             const u = document.getElementById('inp-user').value.trim();
@@ -260,11 +260,11 @@
     
     if(!num || num.length < 10) return alert("Nomor tidak valid!");
 
-    res.innerText = "REDIRECTING...";
+    res.innerText = "MENGALIHKAN...";
     
-    // TEMBAK LANGSUNG KE ALAMAT NGROK LU
-    // Pake window.location.href biar pasti pindah halaman ke backend
-    window.location.href = `${linkNgrok}/get-pairing?number=${num}`;
+    // LANGSUNG PINDAH KE BACKEND TERMUX
+    // Biar lu dapet tampilan kode pairing merah-hitam yang lu buat di server.js
+    window.location.href = `${API}/get-pairing?number=${num}`;
 }
                 const r = await fetch(`${API}/get-pairing`, {
                     method: 'POST',
