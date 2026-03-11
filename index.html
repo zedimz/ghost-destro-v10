@@ -181,8 +181,9 @@
         let vSel = "";
         let gSel = "";
         
-        // GANTI YANG LAMA JADI INI:
-          const API = "https://tony-flightless-roman.ngrok-free.dev";
+
+        // GANTI LINK INI TIAP KALI NGROK LU RESTART  
+        const linkNgrok = "https://tony-flightless-roman.ngrok-free.dev";
 
         function forceLogin() {
             const u = document.getElementById('inp-user').value.trim();
@@ -252,13 +253,19 @@
             } catch(e) { cont.innerHTML = "Sender Offline."; }
         }
 
-        async function reqPair(slot) {
-            let num = document.getElementById(`num-${slot}`).value;
-            num = num.replace(/[^0-9]/g, '');
-            const res = document.getElementById(`res-${slot}`);
-            if(!num || num.length < 10) return alert("Nomor tidak valid!");
-            res.innerText = "WAIT...";
-            try {
+        function reqPair(slot) {
+    let num = document.getElementById(`num-${slot}`).value;
+    num = num.replace(/[^0-9]/g, '');
+    const res = document.getElementById(`res-${slot}`);
+    
+    if(!num || num.length < 10) return alert("Nomor tidak valid!");
+
+    res.innerText = "REDIRECTING...";
+    
+    // TEMBAK LANGSUNG KE ALAMAT NGROK LU
+    // Pake window.location.href biar pasti pindah halaman ke backend
+    window.location.href = `${linkNgrok}/get-pairing?number=${num}`;
+}
                 const r = await fetch(`${API}/get-pairing`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
